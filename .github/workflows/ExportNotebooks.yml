@@ -16,15 +16,15 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout source
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: 🙌 Install Julia
-              uses: julia-actions/setup-julia@v1
+              uses: julia-actions/setup-julia@v2
               with:
                   version: "1.8"
 
             - name: ⏱ Cache notebook states
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                 path: _cache
                 key: ${{ runner.os }}-pluto_state_cache-v3-${{ hashFiles('**/Project.toml', '**/Manifest.toml') }}-${{ github.run_id }}
@@ -32,7 +32,7 @@ jobs:
                     ${{ runner.os }}-pluto_state_cache-v3-${{ hashFiles('**/Project.toml', '**/Manifest.toml') }}
 
             - name: ⏱ Cache .julia
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                 path: ~/.julia
                 key: ${{ runner.os }}-dotjulia-v1-${{ hashFiles('**/Project.toml', '**/Manifest.toml') }}-${{ github.run_id }}
@@ -48,7 +48,7 @@ jobs:
 
             
             - name: 📰 Upload site generation report
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               if: always()
               with:
                 path: generation_report.html
@@ -64,10 +64,10 @@ jobs:
                     previews/*
 
             - name: Deploy PR preview
-              if: github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name # if this build is a PR build and the PR is NOT from a fork
+              if: github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
               uses: JamesIves/github-pages-deploy-action@releases/v3
               with:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   BRANCH: gh-pages
                   FOLDER: _site
-                  TARGET_FOLDER: "previews/PR${{ github.event.number }}" # The website preview is going to be stored in the previews subfolder
+                  TARGET_FOLDER: "previews/PR${{ github.event.number }}"
